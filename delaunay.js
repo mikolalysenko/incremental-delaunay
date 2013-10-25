@@ -27,15 +27,16 @@ proto.insert = function(p) {
       }
     }
   } else {
-    var prev = this.prev
-    var next = this.next
-    this.next = null
-    this.prev = null
+    //Unlink from list
+    this.prev.next = this.next
+    this.next.prev = this.prev
+    this.next = this.prev = null
+    //Add child
     this.children = []
     for(var i=this.vertices.length-1; i>=0; --i) {
       //Remove from dual
       var v = this.vertices[i]
-      var d = this.triangulation._dual[i]
+      var d = this.triangulation._dual[v]
       for(var j=d.length-1; j>=0; --j) {
         if(d[j] === this) {
           d[j] = d[d.length-1]
@@ -46,12 +47,11 @@ proto.insert = function(p) {
       //Add child
       var nv = this.vertices.slice()
       nv[i] = p
-      var child = new Simplex(this.triangulation, nv, null, next, prev)
+      var child = new Simplex(this.triangulation, nv, null, this.triangulation.next, this.triangulation)
       if(!child.degenerate()) {
         this.children.push(child)
-        prev.next = child
-        next.prev = child
-        prev = child
+        this.triangulation.next.prev = child
+        this.triangulation.next = child
         for(var j=0; j<nv.length; ++j) {
           this.triangulation._dual[nv[j]].push(child)
         }
@@ -86,6 +86,15 @@ function DelaunayTriangulation(points, dual, root) {
 
 var dproto = DelaunayTriangulation.prototype
 
+
+dproto.dual = function(v) {
+  var d = this._dual[v]
+  var r = []
+  for(var i=0; i<d.length; ++i) {
+    r.push(d[i].vertices)
+  }
+  return r
+}
 
 function removeFromDual(triangulation, simplex) {
   for(var i=0; i<simplex.vertices.length; ++i) {
@@ -143,15 +152,17 @@ search_opposite:
             continue search_opposite
           }
         }
+        //Check if legal
         points[c.vertices.length] = this.points[opposite_index]
         var s = inSphere(points)
         if(inSphere(points) > 0) {
+          //Unlink cells
           removeFromDual(this, c)
-          removeFromDual(this, opposite)
           c.children = []
           c.next.prev = c.prev
           c.prev.next = c.next
           c.next = c.prev = null
+          removeFromDual(this, opposite)
           opposite.children = []
           opposite.next.prev = opposite.prev
           opposite.prev.next = opposite.next
@@ -162,16 +173,18 @@ search_opposite:
             }
             var nv = c.vertices.slice()
             nv[k] = opposite_index
-            var nchild = new Simplex(this, nv, null)
-            nchild.prev = this
-            nchild.next = this.next
+            //Create and link cell
+            var nchild = new Simplex(this, nv, null, this.next, this)
+            this.next.prev = nchild
             this.next = nchild
-            to_visit.push(nchild)
-            c.children.push(nchild)
-            opposite.children.push(nchild)
             for(var l=0; l<nv.length; ++l) {
               this._dual[nv[l]].push(nchild)
             }
+            //Add to child pointers
+            c.children.push(nchild)
+            opposite.children.push(nchild)
+            //Mark to visit
+            to_visit.push(nchild)
           }
         }
         break do_flip
@@ -222,7 +235,7 @@ function createBoundingSimplex(dimension) {
 
 function createDelaunayTriangulation(dimension, points) {
   var bounds = createBoundingSimplex(dimension)
-  var root = new Simplex(null, iota(dimension+1), null)
+  var root = new Simplex(null, iota(dimension+1), null, null, null)
   var dual = new Array(dimension+1)
   for(var i=0; i<dual.length; ++i) {
     dual[i] = [root]
