@@ -29,6 +29,8 @@ proto.insert = function(p) {
   } else {
     var prev = this.prev
     var next = this.next
+    this.next = null
+    this.prev = null
     this.children = []
     for(var i=this.vertices.length-1; i>=0; --i) {
       //Remove from dual
@@ -147,7 +149,13 @@ search_opposite:
           removeFromDual(this, c)
           removeFromDual(this, opposite)
           c.children = []
+          c.next.prev = c.prev
+          c.prev.next = c.next
+          c.next = c.prev = null
           opposite.children = []
+          opposite.next.prev = opposite.prev
+          opposite.prev.next = opposite.next
+          opposite.next = opposite.prev = null
           for(var k=0; k<c.vertices.length; ++k) {
             if(c.vertices[k] === v) {
               continue
@@ -155,6 +163,9 @@ search_opposite:
             var nv = c.vertices.slice()
             nv[k] = opposite_index
             var nchild = new Simplex(this, nv, null)
+            nchild.prev = this
+            nchild.next = this.next
+            this.next = nchild
             to_visit.push(nchild)
             c.children.push(nchild)
             opposite.children.push(nchild)

@@ -6,11 +6,10 @@ require("tape")(function(t) {
 
   var tri = createTriangulation(2)
   tri.insert([0,0])
-  tri.insert([1,1])
-  //tri.insert([1,0])
-  //tri.insert([0,1])
   tri.insert([0,1])
   tri.insert([1,0])
+  tri.insert([0.5,0.5])
+  //tri.insert([1,1])
   console.log(tri.cells, tri.points)
 
   t.end()
