@@ -1,6 +1,6 @@
 {
   "name": "incremental-delaunay",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Incremental Delaunay triangulation",
   "main": "delaunay.js",
   "directories": {
