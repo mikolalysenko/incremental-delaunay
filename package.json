@@ -1,0 +1,39 @@
+{
+  "name": "incremental-delaunay",
+  "version": "0.0.0",
+  "description": "Incremental Delaunay triangulation",
+  "main": "delaunay.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "deck": "~0.0.4",
+    "iota-array": "~0.0.1",
+    "robust-in-sphere": "~0.0.1",
+    "robust-orientation": "~0.0.0",
+    "robust-point-in-simplex": "~0.0.0",
+    "simplicial-complex": "~0.3.3"
+  },
+  "devDependencies": {
+    "tap": "~0.4.4",
+    "tape": "~2.0.0"
+  },
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mikolalysenko/incremental-delaunay.git"
+  },
+  "keywords": [
+    "delaunay",
+    "triangulate",
+    "exact",
+    "geometry"
+  ],
+  "author": "Mikola Lysenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mikolalysenko/incremental-delaunay/issues"
+  }
+}
