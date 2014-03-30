@@ -65,6 +65,7 @@ proto.contains = function(p) {
   for(var i=0; i<this.vertices.length; ++i) {
     pointList[i] = this.triangulation.points[this.vertices[i]]
   }
+  console.log(this.vertices, p, pointInSimplex(pointList, p))
   return pointInSimplex(pointList, p) >= 0
 }
 
@@ -73,7 +74,7 @@ proto.degenerate = function() {
   for(var i=0; i<this.vertices.length; ++i) {
     pointList[i] = this.triangulation.points[this.vertices[i]]
   }
-  return orientation.apply(undefined, pointList) === 0
+  return orientation(pointList) === 0
 }
 
 function DelaunayTriangulation(points, dual, root) {
@@ -154,7 +155,7 @@ search_opposite:
         }
         //Check if legal
         points[c.vertices.length] = this.points[opposite_index]
-        var s = inSphere.apply(undefined, points)
+        var s = inSphere(points)
         if(s > 0) {
           //Unlink cells
           removeFromDual(this, c)

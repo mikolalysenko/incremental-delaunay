@@ -9,14 +9,15 @@
   "dependencies": {
     "deck": "~0.0.4",
     "iota-array": "~0.0.1",
-    "robust-in-sphere": "^1.0.0",
-    "robust-orientation": "^1.0.0",
-    "robust-point-in-simplex": "^1.0.0",
+    "robust-in-sphere": "~0.0.1",
+    "robust-orientation": "~0.0.0",
+    "robust-point-in-simplex": "~0.0.0",
     "simplicial-complex": "~0.3.3"
   },
   "devDependencies": {
     "tap": "~0.4.4",
-    "tape": "~2.0.0"
+    "tape": "~2.0.0",
+    "game-shell": "^1.0.1"
   },
   "scripts": {
     "test": "tap test/*.js"
