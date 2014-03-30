@@ -73,7 +73,7 @@ proto.degenerate = function() {
   for(var i=0; i<this.vertices.length; ++i) {
     pointList[i] = this.triangulation.points[this.vertices[i]]
   }
-  return orientation(pointList) === 0
+  return orientation.apply(undefined, pointList) === 0
 }
 
 function DelaunayTriangulation(points, dual, root) {
@@ -154,8 +154,8 @@ search_opposite:
         }
         //Check if legal
         points[c.vertices.length] = this.points[opposite_index]
-        var s = inSphere(points)
-        if(inSphere(points) > 0) {
+        var s = inSphere.apply(undefined, points)
+        if(s > 0) {
           //Unlink cells
           removeFromDual(this, c)
           c.children = []
