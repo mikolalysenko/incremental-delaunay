@@ -44,5 +44,9 @@ Adds `point` to the triangulation
 ### `triangulation.locate(point)`
 Returns the simplex containing `point`
 
+# Known bugs
+
+This library is not currently robust.  Pull requests and patches welcome.
+
 # Credits
 (c) 2013 Mikola Lysenko. MIT License
