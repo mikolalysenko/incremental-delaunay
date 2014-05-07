@@ -53,6 +53,8 @@ cells= [ [ 5, 6, 3 ],
 located triangle= [ 3, 0, 4 ]
 ```
 
+
+
 # API
 
 ```javascript
@@ -61,7 +63,7 @@ var createTriangulation = require("incremental-delaunay")
 
 ## Constructor
 
-### `var triangulation = createTriangulation(dimension, points)`
+#### `var triangulation = createTriangulation(dimension, points)`
 Creates a triangulation
 
 * `dimension` is the dimension of the ambient space
@@ -71,16 +73,16 @@ Creates a triangulation
 
 ## Methods
 
-### `triangulation.cells`
+#### `triangulation.cells`
 An array of all cells in the triangulation
 
-### `triangulation.points`
+#### `triangulation.points`
 An array of all points in the triangulation
 
-### `triangulation.insert(point)`
+#### `triangulation.insert(point)`
 Adds `point` to the triangulation
 
-### `triangulation.locate(point)`
+#### `triangulation.locate(point)`
 Returns the simplex containing `point`
 
 # Credits
