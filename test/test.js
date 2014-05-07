@@ -1,8 +1,9 @@
 "use strict"
 
+var tape = require("tape")
 var createTriangulation = require("../delaunay.js")
 
-require("tape")(function(t) {
+tape("2d delaunay", function(t) {
 
   var tri = createTriangulation(2)
 
@@ -10,8 +11,7 @@ require("tape")(function(t) {
   tri.insert([0,1])
   tri.insert([1,0])
 
-  console.log(tri.cells)
-  console.log(tri.points)
+  t.equals(tri.points.length, 6)
 
   t.end()
 })

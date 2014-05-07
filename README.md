@@ -7,11 +7,50 @@ Incremental Delaunay triangulation data structure.
 ```javascript
 var createTriangulation = require("incremental-delaunay")
 
+//Create a 2D triangulation with some points
 var triangulation = createTriangulation(2, [
   [0,1],
   [1,0],
   [1,1]
 ])
+
+//Insert some random point
+triangulation.insert([1, 2])
+
+//Get all points in the triangulation
+console.log("points=", triangulation.points)
+
+//Get all cells in the triangulation
+console.log("cells=", triangulation.cells)
+
+//Locate a triangle containing a point
+console.log("located triangle=", triangulation.locate([0.5, 0.5]))
+```
+
+Example output:
+
+```javascript
+points= [ [ -1e+30, -1e+30 ],
+  [ 1e+30, -1e+30 ],
+  [ 0, 1e+30 ],
+  [ 0, 1 ],
+  [ 1, 0 ],
+  [ 1, 1 ],
+  [ 1, 2 ] ]
+
+
+cells= [ [ 5, 6, 3 ],
+  [ 3, 6, 2 ],
+  [ 6, 1, 2 ],
+  [ 5, 1, 6 ],
+  [ 4, 5, 3 ],
+  [ 4, 1, 5 ],
+  [ 3, 0, 4 ],
+  [ 0, 1, 4 ],
+  [ 0, 3, 2 ] ]
+
+
+located triangle= [ 3, 0, 4 ]
 ```
 
 # API
@@ -44,9 +83,5 @@ Adds `point` to the triangulation
 ### `triangulation.locate(point)`
 Returns the simplex containing `point`
 
-# Known bugs
-
-This library is not currently robust.  Pull requests and patches welcome.
-
 # Credits
-(c) 2013 Mikola Lysenko. MIT License
+(c) 2013-2014 Mikola Lysenko. MIT License

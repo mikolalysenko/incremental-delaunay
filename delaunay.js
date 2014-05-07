@@ -1,11 +1,9 @@
 "use strict"
 
 var iota = require("iota-array")
-var deck = require("deck")
 var orientation = require("robust-orientation")
 var pointInSimplex = require("robust-point-in-simplex")
 var inSphere = require("robust-in-sphere")
-var sc = require("simplicial-complex")
 
 module.exports = createDelaunayTriangulation
 
@@ -65,7 +63,6 @@ proto.contains = function(p) {
   for(var i=0; i<this.vertices.length; ++i) {
     pointList[i] = this.triangulation.points[this.vertices[i]]
   }
-  console.log(this.vertices, p, pointInSimplex(pointList, p))
   return pointInSimplex(pointList, p) >= 0
 }
 
@@ -74,7 +71,7 @@ proto.degenerate = function() {
   for(var i=0; i<this.vertices.length; ++i) {
     pointList[i] = this.triangulation.points[this.vertices[i]]
   }
-  return orientation(pointList) === 0
+  return orientation.apply(undefined, pointList) === 0
 }
 
 function DelaunayTriangulation(points, dual, root) {
@@ -86,7 +83,6 @@ function DelaunayTriangulation(points, dual, root) {
 }
 
 var dproto = DelaunayTriangulation.prototype
-
 
 dproto.dual = function(v) {
   var d = this._dual[v]
@@ -155,7 +151,7 @@ search_opposite:
         }
         //Check if legal
         points[c.vertices.length] = this.points[opposite_index]
-        var s = inSphere(points)
+        var s = inSphere.apply(undefined, points)
         if(s > 0) {
           //Unlink cells
           removeFromDual(this, c)
@@ -246,9 +242,8 @@ function createDelaunayTriangulation(dimension, points) {
   root.next = root.prev = triangulation
   triangulation.next = triangulation.prev = root
   if(points) {
-    var spoints = deck.shuffle(points)
-    for(var i=0; i<spoints.length; ++i) {
-      triangulation.insert(spoints[i])
+    for(var i=0; i<points.length; ++i) {
+      triangulation.insert(points[i])
     }
   }
   return triangulation
