@@ -127,64 +127,60 @@ dproto.insert = function(p) {
       v_sum ^= c.vertices[i]
     }
     //Walk over simplex vertices
-do_flip:
-    for(var i=0; i<c.vertices.length; ++i) {
-      //Find opposite simplex to vertex i
-      if(c.vertices[i] !== v) {
+    var i = c.vertices.indexOf(v)
+    var d = this._dual[c.vertices[(i+1)%c.vertices.length]]
+    var opposite
+    var opposite_index
+search_opposite:
+    for(var j=0; j<d.length; ++j) {
+      opposite = d[j]
+      if(opposite === c) {
         continue
       }
-      var d = this._dual[c.vertices[(i+1)%c.vertices.length]]
-      var opposite
-      var opposite_index
-search_opposite:
-      for(var j=0; j<d.length; ++j) {
-        opposite = d[j]
-        if(opposite === c) {
-          continue
+      opposite_index = v_sum ^ v
+      for(var k=0; k<opposite.vertices.length; ++k) {
+        opposite_index ^= opposite.vertices[k]
+        if(c.vertices[k] !== v && opposite.vertices.indexOf(c.vertices[k]) < 0) {
+          continue search_opposite
         }
-        opposite_index = v_sum ^ v
-        for(var k=0; k<opposite.vertices.length; ++k) {
-          opposite_index ^= opposite.vertices[k]
-          if(c.vertices[k] !== v && opposite.vertices.indexOf(c.vertices[k]) < 0) {
-            continue search_opposite
+      }
+      //Check if legal
+      points[c.vertices.length] = this.points[opposite_index]
+      var s = inSphere.apply(undefined, points)
+      if(s > 0) {
+
+        //TODO: Test if flip is valid
+
+        //Unlink cells
+        removeFromDual(this, c)
+        c.children = []
+        c.next.prev = c.prev
+        c.prev.next = c.next
+        c.next = c.prev = null
+        removeFromDual(this, opposite)
+        opposite.children = []
+        opposite.next.prev = opposite.prev
+        opposite.prev.next = opposite.next
+        opposite.next = opposite.prev = null
+        for(var k=0; k<c.vertices.length; ++k) {
+          if(c.vertices[k] === v) {
+            continue
           }
-        }
-        //Check if legal
-        points[c.vertices.length] = this.points[opposite_index]
-        var s = inSphere.apply(undefined, points)
-        if(s > 0) {
-          //Unlink cells
-          removeFromDual(this, c)
-          c.children = []
-          c.next.prev = c.prev
-          c.prev.next = c.next
-          c.next = c.prev = null
-          removeFromDual(this, opposite)
-          opposite.children = []
-          opposite.next.prev = opposite.prev
-          opposite.prev.next = opposite.next
-          opposite.next = opposite.prev = null
-          for(var k=0; k<c.vertices.length; ++k) {
-            if(c.vertices[k] === v) {
-              continue
-            }
-            var nv = c.vertices.slice()
-            nv[k] = opposite_index
-            //Create and link cell
-            var nchild = new Simplex(this, nv, null, this.next, this)
-            this.next.prev = nchild
-            this.next = nchild
-            for(var l=0; l<nv.length; ++l) {
-              this._dual[nv[l]].push(nchild)
-            }
-            //Add to child pointers
-            c.children.push(nchild)
-            opposite.children.push(nchild)
-            //Mark to visit
-            to_visit.push(nchild)
+          var nv = c.vertices.slice()
+          nv[k] = opposite_index
+          //Create and link cell
+          var nchild = new Simplex(this, nv, null, this.next, this)
+          this.next.prev = nchild
+          this.next = nchild
+          for(var l=0; l<nv.length; ++l) {
+            this._dual[nv[l]].push(nchild)
           }
+          //Add to child pointers
+          c.children.push(nchild)
+          opposite.children.push(nchild)
+          //Mark to visit
+          to_visit.push(nchild)
         }
-        break do_flip
       }
     }
   }
@@ -219,12 +215,12 @@ function createBoundingSimplex(dimension) {
     result[i] = new Array(dimension)
   }
   for(var i=1; i<=dimension; ++i) {
-    result[i][i-1] = 1e30
+    result[i][i-1] = 10
     for(var j=0; j<i-1; ++j) {
       result[i][j] = 0.0
     }
     for(var j=0; j<i; ++j) {
-      result[j][i-1] = -1e30
+      result[j][i-1] = -10
     }
   }
   return result

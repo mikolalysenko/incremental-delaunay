@@ -72,12 +72,9 @@ shell.on("render", function() {
     context.fill()
   }
 
-
-
   context.fillStyle = "#f00"
   context.beginPath()
   context.arc(mouse[0], mouse[1], 5.0/w, 0, 2*Math.PI)
   context.closePath()
   context.fill()
-
 })
