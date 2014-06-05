@@ -2,6 +2,8 @@ incremental-delaunay
 ====================
 Incremental Delaunay triangulation data structure.
 
+**Warning** This module has problems in >3D.  For those cases you should use [delaunay-triangulate](https://www.npmjs.org/package/delaunay-triangulate) instead.
+
 # Example
 
 ```javascript
